@@ -12,18 +12,28 @@ const users = [];
 function checksExistsUserAccount(request, response, next) {
   // Complete aqui
   const {username} = request.header;
-
+  
   const user = users.find((u) => u.username === username);
 
   if(!user){
     return response.status(404).send()
   }
 
+  request.user = user;
+
   return next();
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-    
+    const user = request.user;
+    const amount = user.todos.length;
+    console.log(amount)
+    if(user.pro || amount < 10){
+      return next();
+    }
+    else{
+      return response.status(403).send()
+    }
 }
 
 function checksTodoExists(request, response, next) {
